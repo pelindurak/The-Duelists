@@ -1,24 +1,25 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class FuzzyMain : MonoBehaviour
 {
 
-    FuzzySet healthSet;
-    FuzzySet enemyHealthSet;
-    FuzzySet aggroSet;
+    private FuzzySet healthSet;
+    private FuzzySet enemyHealthSet;
+    private FuzzySet aggroSet;
 
-    FuzzySet distanceSet;
-
-    public float Health;
-
-    List<MemPair> playerList = new List<MemPair>();
-    List<MemPair> enemyList = new List<MemPair>();
-    List<MemPair> aggressionList = new List<MemPair>();
+    private List<MemPair> playerList = new List<MemPair>();
+    private List<MemPair> enemyList = new List<MemPair>();
+    private List<MemPair> aggressionList = new List<MemPair>();
 
     float crispAggro;
+
+
+    private FuzzySet distanceSet;
+
+    public float Health;
+    public float PlayerHealth;
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,17 +28,7 @@ public class FuzzyMain : MonoBehaviour
         enemyHealthSet = InitHealthSet();
         aggroSet = InitAggroSet();
 
-        playerList = healthSet.FuzzyValueList(5f);
-        enemyList = healthSet.FuzzyValueList(65f);
-        aggressionList = EvaluateAggression();
-
-        Debug.Log(GetListAsString(aggressionList));
-        
-
-        crispAggro = aggroSet.Defuzzify(aggressionList);
-
-        Debug.Log(crispAggro);
-
+        UpdateAggressionValue();
     }
 
     // Update is called once per frame
@@ -46,13 +37,24 @@ public class FuzzyMain : MonoBehaviour
         
     }
 
-    List<MemPair> EvaluateAggression()
+    private void UpdateAggressionValue()
+    {
+        playerList = healthSet.FuzzyValueList(PlayerHealth);
+        enemyList = healthSet.FuzzyValueList(Health);
+        aggressionList = EvaluateAggression();
+
+        crispAggro = aggroSet.Defuzzify(aggressionList);
+
+        Debug.Log($"Aggression: {GetListAsString(aggressionList)} crisp value: {crispAggro}");
+    }
+
+    private List<MemPair> EvaluateAggression()
     {
         AggressionRule aggression = new AggressionRule(enemyList, playerList);
         return aggression.EvaluateRule();
     }
 
-    FuzzySet InitHealthSet()
+    private FuzzySet InitHealthSet()
     {
         FuzzySet fuzzySet = new FuzzySet();
         fuzzySet.AddDescendingLinearMF("LOW", 0f, 40f);
@@ -61,7 +63,7 @@ public class FuzzyMain : MonoBehaviour
         return fuzzySet;
     }
 
-    FuzzySet InitAggroSet()
+    private FuzzySet InitAggroSet()
     {
         FuzzySet fuzzySet = new FuzzySet();
         fuzzySet.AddDescendingLinearMF("LOW", 0f, 40f);
