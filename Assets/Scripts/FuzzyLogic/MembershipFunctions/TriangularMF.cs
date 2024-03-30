@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class TriangularMF
+public class TriangularMF : BaseMF
 {
-    public string name { get; set; }
     public float first { get; set; } = 0;
     public float second { get; set; } = 0;
     public float third { get; set; } = 0;
@@ -14,27 +10,26 @@ public class TriangularMF
     /// <param name="first">Increasing point</param>
     /// <param name="second">Point where membership = 1</param>
     /// <param name="third">Descend point</param>
-    public TriangularMF(string name, float first, float second, float third)
+    public TriangularMF(string name, float first, float second, float third) : base(name)
     {
-        this.name = name;
         this.first = first;
         this.second = second;
         this.third = third;
     }
 
-    public float Fuzzify(float crispValue)
+    public override float GetMembership(float value)
     {
-        if (crispValue >= second && crispValue < third) return (third - crispValue) / (third - second);
-        else if (crispValue > first && crispValue < second) return (crispValue - first) / (second - first);
+        if (value >= second && value < third) return (third - value) / (third - second);
+        else if (value > first && value < second) return (value - first) / (second - first);
         else return 0;
     }
 
-    public float GetMin()
+    public override float GetMin()
     {
         return first;
     }
 
-    public float GetMax()
+    public override float GetMax()
     {
         return third;
     }

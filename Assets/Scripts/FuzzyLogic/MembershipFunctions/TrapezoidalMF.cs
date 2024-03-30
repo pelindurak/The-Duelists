@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class TrapezoidalMF
+public class TrapezoidalMF : BaseMF
 {
 
-    public string name { get; set; }
     public float first { get; set; } = 0;
     public float second { get; set; } = 0;
     public float third { get; set; } = 0;
@@ -17,29 +13,28 @@ public class TrapezoidalMF
     /// <param name="second">Left point where membership = 1</param>
     /// <param name="third">Left point where membership = 1</param>
     /// <param name="fourth">Descend point</param>
-    public TrapezoidalMF(String name, float first, float second, float third, float fourth)
+    public TrapezoidalMF(string name, float first, float second, float third, float fourth) : base(name)
     {
-        this.name = name;
         this.first = first;
         this.second = second;
         this.third = third;
         this.fourth = fourth;
     }
 
-    public float Fuzzify(float crispValue)
+    public override float GetMembership(float value)
     {
-        if (crispValue >= third && crispValue < fourth) return (fourth - crispValue) / (fourth - third);
-        else if (crispValue >= second && crispValue < third) return 1;
-        else if (crispValue >= first && crispValue < second) return (crispValue - first) / (second - first);
+        if (value >= third && value < fourth) return (fourth - value) / (fourth - third);
+        else if (value >= second && value < third) return 1;
+        else if (value >= first && value < second) return (value - first) / (second - first);
         else return 0;
     }
 
-    public float GetMin()
+    public override float GetMin()
     {
         return first;
     }
 
-    public float GetMax()
+    public override float GetMax()
     {
         return fourth;
     }
