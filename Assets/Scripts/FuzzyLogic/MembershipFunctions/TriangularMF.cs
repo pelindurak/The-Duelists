@@ -1,5 +1,3 @@
-using System;
-
 public class TriangularMF : BaseMF
 {
     public float first { get; set; } = 0;
@@ -21,7 +19,18 @@ public class TriangularMF : BaseMF
     {
         if (value >= second && value < third) return (third - value) / (third - second);
         else if (value > first && value < second) return (value - first) / (second - first);
-        else return 0;
+        else return 0f;
+    }
+
+    public override float CalculateCentroid(float value)
+    {
+        float cx = (first + second + third) / 3;
+        return cx;
+    }
+
+    public override float CalculateArea(float value)
+    {
+        return (third - first) * value / 2;
     }
 
     public override float GetMin()

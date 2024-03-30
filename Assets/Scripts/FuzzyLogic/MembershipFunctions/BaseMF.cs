@@ -1,4 +1,3 @@
-
 public abstract class BaseMF
 {
     public string Name { get; set; }
@@ -13,5 +12,8 @@ public abstract class BaseMF
     public abstract float GetMax();
 
     public abstract float GetMembership(float value);
+
+    public abstract float CalculateCentroid(float value);
+    public abstract float CalculateArea(float value);
 
 }

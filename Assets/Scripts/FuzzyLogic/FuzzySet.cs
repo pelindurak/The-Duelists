@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class FuzzySet
 {
@@ -12,9 +10,21 @@ public class FuzzySet
         functionList = new List<BaseMF>();
     }
 
-    public void Defuzzify()
+    public float Defuzzify(List<MemPair> valueList)
     {
-        // TODO Defuzzify
+        float sum = 0f, weights = 0f;
+        for (int i = 0; i < functionList.Count; i++)
+        {
+            BaseMF mf = functionList[i];
+            float area = mf.CalculateArea(valueList[i].value);
+            float centroid =  mf.CalculateCentroid(valueList[i].value);
+
+            sum += area * centroid;
+            weights += area;
+        }
+        if (weights == 0f) return 0f;
+
+        return sum / weights;
     }
 
     public List<MemPair> FuzzyValueList(float value)

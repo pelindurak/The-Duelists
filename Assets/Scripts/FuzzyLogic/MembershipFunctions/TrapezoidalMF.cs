@@ -1,5 +1,3 @@
-using System;
-
 public class TrapezoidalMF : BaseMF
 {
 
@@ -24,9 +22,20 @@ public class TrapezoidalMF : BaseMF
     public override float GetMembership(float value)
     {
         if (value >= third && value < fourth) return (fourth - value) / (fourth - third);
-        else if (value >= second && value < third) return 1;
+        else if (value >= second && value < third) return 1f;
         else if (value >= first && value < second) return (value - first) / (second - first);
-        else return 0;
+        else return 0f;
+    }
+
+    public override float CalculateCentroid(float value)
+    {
+        float cx = (first + second + third + fourth) / 4;
+        return cx;
+    }
+
+    public override float CalculateArea(float value)
+    {
+        return ((third - second) + (fourth - first)) * value / 2;
     }
 
     public override float GetMin()

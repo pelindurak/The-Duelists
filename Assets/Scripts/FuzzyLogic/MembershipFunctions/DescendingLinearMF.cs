@@ -1,5 +1,3 @@
-
-
 public class DescendingLinearMF : BaseMF
 {
     public float first { get; set; } = 0;
@@ -17,7 +15,18 @@ public class DescendingLinearMF : BaseMF
     public override float GetMembership(float value)
     {
         if (value >= first && value <= second) return (value - second) / (first - second);
-        else return 0;
+        else return 0f;
+    }
+
+    public override float CalculateCentroid(float value)
+    {
+        float cx = (first + second) / 2;
+        return cx;
+    }
+
+    public override float CalculateArea(float value)
+    {
+        return (second - first) * value / 2;
     }
 
     public override float GetMin()
