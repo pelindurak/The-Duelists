@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 3397534461513971868}
   - component: {fileID: 3224232567697039029}
+  - component: {fileID: 8420461421571227213}
   - component: {fileID: 1897575886767662137}
   - component: {fileID: 4897079842942203030}
   - component: {fileID: 7922272628943516304}
   - component: {fileID: 685214203588092946}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LightBandit
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -34,7 +35,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 569059507715130747}
   - {fileID: 4848327908450721732}
+  - {fileID: 5990412132220119997}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3224232567697039029
@@ -51,6 +54,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 4
   m_jumpForce: 7.5
+  BanditHealthSlider: {fileID: 2621664175671425266}
+  PlayerHealthSlider: {fileID: 0}
+  BanditHealth: 100
+  PlayerHealth: 100
+  AttackRange: 1
+  AttackDamage: 10
+  AttackCooldown: 1.5
+  SwordPosition: {fileID: 5990412132220119997}
+  PlayerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!114 &8420461421571227213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3842536352420924056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a732e60f728bb9046be785570c47cbfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  crispAggro: 0
 --- !u!95 &1897575886767662137
 Animator:
   serializedVersion: 5
@@ -196,6 +223,37 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.8, y: 1.2}
   m_EdgeRadius: 0
+--- !u!1 &6295525331769870991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5990412132220119997}
+  m_Layer: 3
+  m_Name: SwordPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5990412132220119997
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6295525331769870991}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3397534461513971868}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7961409062210640625
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,3 +344,128 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.16, y: 0.03}
   m_EdgeRadius: 0
+--- !u!1001 &8772240784512872028
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3397534461513971868}
+    m_Modifications:
+    - target: {fileID: 1360573452572396592, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_Name
+      value: BanditHealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262173577906209509, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4262173577906209509, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5741254061182016404, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_Name
+      value: HealthBarUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+--- !u!224 &569059507715130747 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 9104297261084322599, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+  m_PrefabInstance: {fileID: 8772240784512872028}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2621664175671425266 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6764203408134395566, guid: b074a9c723bcda9478a3884386e86022, type: 3}
+  m_PrefabInstance: {fileID: 8772240784512872028}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

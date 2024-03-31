@@ -1,60 +1,62 @@
-﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class Bandit : MonoBehaviour {
+public class Player : MonoBehaviour
+{
 
-    [SerializeField] float      m_speed = 4.0f;
-    [SerializeField] float      m_jumpForce = 7.5f;
+    [SerializeField] float m_speed = 4.0f;
+    [SerializeField] float m_jumpForce = 7.5f;
 
-    private Animator            m_animator;
-    private Rigidbody2D         m_body2d;
-    private Sensor_Bandit       m_groundSensor;
-    private FuzzyMain           fuzzyScript;
-    private bool                m_grounded = false;
-    private bool                m_combatIdle = true;
-    //private bool                m_isDead = false;
-
-    public Slider BanditHealthSlider, PlayerHealthSlider;
-    private float inputX = 0f;
+    private Animator m_animator;
+    private Rigidbody2D m_body2d;
+    private Sensor_Bandit m_groundSensor;
+    private bool m_grounded = false;
+    private bool m_combatIdle = false;
+    private bool m_isDead = false;
     private float _attackTimer = 0f;
     private bool _canAttack = true;
 
-    public float BanditHealth;
-    public float PlayerHealth;
+    public Slider HealthSlider;
+    public float Health;
 
     public float AttackRange;
     public float AttackDamage;
     public float AttackCooldown;
 
     public Transform SwordPosition;
-    public LayerMask PlayerLayer;
-
+    public LayerMask EnemyLayer;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Bandit>();
-        fuzzyScript = GetComponent<FuzzyMain>();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+
         //Check if character just landed on the ground
-        if (!m_grounded && m_groundSensor.State()) {
+        if (!m_grounded && m_groundSensor.State())
+        {
             m_grounded = true;
             m_animator.SetBool("Grounded", m_grounded);
         }
 
         //Check if character just started falling
-        if(m_grounded && !m_groundSensor.State()) {
+        if (m_grounded && !m_groundSensor.State())
+        {
             m_grounded = false;
             m_animator.SetBool("Grounded", m_grounded);
         }
 
         // -- Handle input and movement --
-        //float inputX = Input.GetAxis("Horizontal");
+        float inputX = Input.GetAxis("Horizontal");
 
         // Swap direction of sprite depending on walk direction
         if (inputX > 0)
@@ -70,34 +72,27 @@ public class Bandit : MonoBehaviour {
 
         UpdateHealth();
 
-        DecideAction();
-
-        
-
-    }
-
-    void DecideAction()
-    {
-        float aggro = fuzzyScript.crispAggro;
-
-        Attack();
         TickAttackTimer();
 
-        //if ()
-        //{
 
-        //}
-        //if ()
-        //else
-        //{
-        //    Idle();
-        //}
+        if (Input.GetMouseButtonDown(0))
+        {
+            Attack();
+        }
+        else if (Mathf.Abs(inputX) > Mathf.Epsilon)
+        {
+            Run();
+        } 
+        else
+        {
+            Idle();
+        }
+            
     }
 
     void UpdateHealth()
     {
-        BanditHealthSlider.value = BanditHealth;
-        PlayerHealth = PlayerHealthSlider.value;
+        HealthSlider.value = Health;
     }
 
     void Death()
@@ -108,17 +103,17 @@ public class Bandit : MonoBehaviour {
     public void Hurt(float damage)
     {
         m_animator.SetTrigger("Hurt");
-        BanditHealth -= damage;
+        Health -= damage;
     }
 
     void Attack()
     {
         if (!_canAttack) return;
         m_animator.SetTrigger("Attack");
-        Collider2D[] player = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer);
-        for (int i = 0; i < player.Length; i++)
+        Collider2D[] bandits = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, EnemyLayer);
+        for (int i = 0; i < bandits.Length; i++)
         {
-            player[i].GetComponent<Player>().Hurt(AttackDamage);
+            bandits[i].GetComponent<Bandit>().Hurt(AttackDamage);
         }
         ResetAttackTimer();
     }
@@ -149,15 +144,14 @@ public class Bandit : MonoBehaviour {
 
     void Run()
     {
-        if (Mathf.Abs(inputX) > Mathf.Epsilon)
-            m_animator.SetInteger("AnimState", 2);
+        m_animator.SetInteger("AnimState", 2);
     }
 
     void Idle()
     {
         if (m_combatIdle)
             m_animator.SetInteger("AnimState", 1);
-        else 
+        else
             m_animator.SetInteger("AnimState", 0);
     }
 
@@ -165,5 +159,4 @@ public class Bandit : MonoBehaviour {
     {
         Gizmos.DrawWireSphere(SwordPosition.position, AttackRange);
     }
-
 }

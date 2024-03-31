@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FuzzyMain : MonoBehaviour
 {
@@ -12,35 +13,37 @@ public class FuzzyMain : MonoBehaviour
     private List<MemPair> enemyList = new List<MemPair>();
     private List<MemPair> aggressionList = new List<MemPair>();
 
-    float crispAggro;
 
-
+    private Bandit banditScript;
+    private float BanditHealth = 0f, PlayerHealth = 0f;
     private FuzzySet distanceSet;
 
-    public float Health;
-    public float PlayerHealth;
+
+    public float crispAggro = 0f;
 
 
-    // Start is called before the first frame update
     void Start()
     {
+        banditScript = GetComponent<Bandit>();
+        BanditHealth = banditScript.BanditHealth;
+        PlayerHealth = banditScript.PlayerHealth;
+
         healthSet = InitHealthSet();
         enemyHealthSet = InitHealthSet();
         aggroSet = InitAggroSet();
-
-        UpdateAggressionValue();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        UpdateAggressionValue();
     }
 
     private void UpdateAggressionValue()
     {
-        playerList = healthSet.FuzzyValueList(PlayerHealth);
-        enemyList = healthSet.FuzzyValueList(Health);
+        BanditHealth = banditScript.BanditHealth;
+
+        playerList = healthSet.FuzzyValueList(PlayerHealth * 100);
+        enemyList = healthSet.FuzzyValueList(BanditHealth * 100);
         aggressionList = EvaluateAggression();
 
         crispAggro = aggroSet.Defuzzify(aggressionList);
