@@ -107,13 +107,25 @@ public class Bandit : MonoBehaviour {
     // attack & retreat
     void StandGround()
     {
-        // TODO
+        SwapSpriteDirection(PlayerObject.transform.position.x - transform.position.x);
+        if (IsCloseToPlayer()) Attack();
     }
 
     // retreat
     void Defense()
     {
-        // TODO
+        // if the bandit reaches the edges of the play area,
+        // he turns around and faces the player
+        if (transform.position.x < -10f || transform.position.x > 10f)
+        {
+            Idle();
+            StandGround();
+        }
+        else
+        {
+            RunAway();
+        }
+
     }
 
     void ChasePlayer()
@@ -125,6 +137,13 @@ public class Bandit : MonoBehaviour {
             inputX = Mathf.Clamp(xDiff, -1f, 1f);
             Run(inputX);
         }
+    }
+
+    void RunAway()
+    {
+        float xDiff = PlayerObject.transform.position.x - transform.position.x;
+        float inputX = Mathf.Clamp(xDiff, -1f, 1f);
+        Run(-inputX);
     }
 
     bool IsCloseToPlayer()
@@ -188,15 +207,7 @@ public class Bandit : MonoBehaviour {
 
     void Run(float inputX)
     {
-        // Swap direction of sprite depending on walk direction
-        if (inputX > 0)
-        {
-            transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-        }
-        else if (inputX < 0)
-        {
-            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-        }
+        SwapSpriteDirection(inputX);
 
         // Move
         m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
@@ -206,6 +217,19 @@ public class Bandit : MonoBehaviour {
 
         if (Mathf.Abs(inputX) > Mathf.Epsilon)
             m_animator.SetInteger("AnimState", 2);
+    }
+
+    // Swap direction of sprite depending on walk direction
+    void SwapSpriteDirection(float xPos)
+    {
+        if (xPos > 0)
+        {
+            transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+        }
+        else if (xPos < 0)
+        {
+            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
     }
 
     void Idle()
