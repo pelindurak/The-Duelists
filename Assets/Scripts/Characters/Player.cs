@@ -14,9 +14,9 @@ public class Player : MonoBehaviour
     private Sensor_Bandit m_groundSensor;
     private bool m_grounded = false;
     private bool m_combatIdle = false;
-    private bool m_isDead = false;
     private float _attackTimer = 0f;
     private bool _canAttack = true;
+    private bool _isDead = false;
 
     public Slider HealthSlider;
     public float Health;
@@ -55,6 +55,8 @@ public class Player : MonoBehaviour
             m_animator.SetBool("Grounded", m_grounded);
         }
 
+        if (_isDead) return;
+
         // -- Handle input and movement --
         float inputX = Input.GetAxis("Horizontal");
 
@@ -69,6 +71,7 @@ public class Player : MonoBehaviour
 
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeed", m_body2d.velocity.y);
+
 
         UpdateHealth();
 
@@ -93,11 +96,13 @@ public class Player : MonoBehaviour
     void UpdateHealth()
     {
         HealthSlider.value = Health;
+        if (Health <= 0) Death();
     }
 
     void Death()
     {
         m_animator.SetTrigger("Death");
+        _isDead = true;
     }
 
     public void Hurt(float damage)

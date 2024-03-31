@@ -2684,6 +2684,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3224232567697039029, guid: ef8a64b51b609fc4e8548482a5e4c14b, type: 3}
+      propertyPath: AttackCooldown
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3224232567697039029, guid: ef8a64b51b609fc4e8548482a5e4c14b, type: 3}
       propertyPath: PlayerHealthSlider
       value: 
       objectReference: {fileID: 1406572775}

@@ -19,7 +19,7 @@ public class FuzzyMain : MonoBehaviour
     private FuzzySet distanceSet;
 
 
-    public float crispAggro = 0f;
+    private float crispAggro = 0f;
 
 
     void Start()
@@ -36,6 +36,11 @@ public class FuzzyMain : MonoBehaviour
     void Update()
     {
         UpdateAggressionValue();
+    }
+
+    public float GetCrispAggro()
+    {
+        return crispAggro;
     }
 
     private void UpdateAggressionValue()

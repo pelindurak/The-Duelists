@@ -13,12 +13,12 @@ public class Bandit : MonoBehaviour {
     private FuzzyMain           fuzzyScript;
     private bool                m_grounded = false;
     private bool                m_combatIdle = true;
-    //private bool                m_isDead = false;
 
     public Slider BanditHealthSlider, PlayerHealthSlider;
     private float inputX = 0f;
     private float _attackTimer = 0f;
     private bool _canAttack = true;
+    private bool _isDead = false;
 
     public float BanditHealth;
     public float PlayerHealth;
@@ -53,6 +53,8 @@ public class Bandit : MonoBehaviour {
             m_animator.SetBool("Grounded", m_grounded);
         }
 
+        if (_isDead) return;
+
         // -- Handle input and movement --
         //float inputX = Input.GetAxis("Horizontal");
 
@@ -68,41 +70,54 @@ public class Bandit : MonoBehaviour {
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeed", m_body2d.velocity.y);
 
+
         UpdateHealth();
+
+        TickAttackTimer();
 
         DecideAction();
 
-        
 
     }
 
     void DecideAction()
     {
-        float aggro = fuzzyScript.crispAggro;
+        EvaluateAggression();
+    }
 
-        Attack();
-        TickAttackTimer();
-
-        //if ()
+    public void EvaluateAggression()
+    {
+        float aggro = fuzzyScript.GetCrispAggro();
+        if (aggro > 0)
+        {
+            Offence();
+        }
+        //else if (aggro > 40)
         //{
-
+        //    StandGround();
         //}
-        //if ()
         //else
         //{
-        //    Idle();
+        //    Defense();
         //}
+    }
+
+    void Offence()
+    {
+        Attack();
     }
 
     void UpdateHealth()
     {
         BanditHealthSlider.value = BanditHealth;
         PlayerHealth = PlayerHealthSlider.value;
+        if (BanditHealth <= 0) Death();
     }
 
     void Death()
     {
         m_animator.SetTrigger("Death");
+        _isDead = true;
     }
 
     public void Hurt(float damage)
