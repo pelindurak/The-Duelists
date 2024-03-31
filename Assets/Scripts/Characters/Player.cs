@@ -80,15 +80,22 @@ public class Player : MonoBehaviour
         TickAttackTimer();
 
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && _canAttack)
         {
             Attack();
+        }
+        else if (Input.GetKeyDown("space") && m_grounded) 
+        {
+            Jump();
+        }
+        else if (Mathf.Abs(_inputX) > Mathf.Epsilon)
+        {
+            Run();
         }
         else
         {
             Idle();
         }
-        Run();
 
     }
 
@@ -132,22 +139,18 @@ public class Player : MonoBehaviour
         if (_attackTimer < 0) _canAttack = true;
     }
 
-    //void Jump()
-    //{
-    //    if (m_grounded)
-    //    {
-    //        m_animator.SetTrigger("Jump");
-    //        m_grounded = false;
-    //        m_animator.SetBool("Grounded", m_grounded);
-    //        m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
-    //        m_groundSensor.Disable(0.2f);
-    //    }
-    //}
+    void Jump()
+    {
+        m_animator.SetTrigger("Jump");
+        m_grounded = false;
+        m_animator.SetBool("Grounded", m_grounded);
+        m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
+        m_groundSensor.Disable(0.2f);
+    }
 
     void Run()
     {
-        if (Mathf.Abs(_inputX) > Mathf.Epsilon)
-            m_animator.SetInteger("AnimState", 2);
+        m_animator.SetInteger("AnimState", 2);
     }
 
     void Idle()

@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.Windows;
 
 public class Bandit : MonoBehaviour {
 
     [SerializeField] float      m_speed = 4.0f;
-    [SerializeField] float      m_jumpForce = 7.5f;
+    //[SerializeField] float      m_jumpForce = 7.5f;
 
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
@@ -15,10 +17,10 @@ public class Bandit : MonoBehaviour {
     private bool                m_combatIdle = true;
 
     public Slider BanditHealthSlider, PlayerHealthSlider;
-    private float _inputX = 0f;
     private float _attackTimer = 0f;
     private bool _canAttack = true;
     private bool _isDead = false;
+    private bool _isPlayerDead = false;
 
     public float BanditHealth;
     public float PlayerHealth;
@@ -30,6 +32,9 @@ public class Bandit : MonoBehaviour {
 
     public Transform SwordPosition;
     public LayerMask PlayerLayer;
+    public GameObject PlayerObject;
+
+    public TMP_Text aggressionText;
 
 
     // Use this for initialization
@@ -54,30 +59,13 @@ public class Bandit : MonoBehaviour {
             m_animator.SetBool("Grounded", m_grounded);
         }
 
-        if (_isDead) return;
-
-        // -- Handle input and movement --
-        //float inputX = Input.GetAxis("Horizontal");
-
-        // Swap direction of sprite depending on walk direction
-        if (_inputX > 0)
-            transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-        else if (_inputX < 0)
-            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-
-        // Move
-        m_body2d.velocity = new Vector2(_inputX * m_speed, m_body2d.velocity.y);
-
-        //Set AirSpeed in animator
-        m_animator.SetFloat("AirSpeed", m_body2d.velocity.y);
-
+        if (_isDead || _isPlayerDead) return;
 
         UpdateHealth();
 
         TickAttackTimer();
 
         DecideAction();
-
 
     }
 
@@ -92,31 +80,51 @@ public class Bandit : MonoBehaviour {
 
         if (aggro >= 40)
         {
+            aggressionText.text = "Offence";
             Offence();
         }
         else if (aggro >= 30)
         {
+            aggressionText.text = "StandGround";
             StandGround();
         }
         else
         {
+            aggressionText.text = "Defense";
             Defense();
         }
     }
 
+    // follow player
+    // attack as much as you can
     void Offence()
     {
-        Attack();
+        if (IsCloseToPlayer()) Attack();
+        else ChasePlayer();
     }
 
+    // follow player
+    // attack & retreat
     void StandGround()
     {
         // TODO
     }
 
+    // retreat
     void Defense()
     {
         // TODO
+    }
+
+    void ChasePlayer()
+    {
+        float inputX = 0f;
+        if (!IsCloseToPlayer()) 
+        {
+            float xDiff = PlayerObject.transform.position.x - transform.position.x;
+            inputX = Mathf.Clamp(xDiff, -1f, 1f);
+            Run(inputX);
+        }
     }
 
     bool IsCloseToPlayer()
@@ -129,6 +137,7 @@ public class Bandit : MonoBehaviour {
         BanditHealthSlider.value = BanditHealth;
         PlayerHealth = PlayerHealthSlider.value;
         if (BanditHealth <= 0) Death();
+        if (PlayerHealth <= 0) _isPlayerDead = true;
     }
 
     void Death()
@@ -148,6 +157,7 @@ public class Bandit : MonoBehaviour {
         if (!_canAttack) return;
         ResetAttackTimer();
 
+        Idle();
         m_animator.SetTrigger("Attack");
         StartCoroutine(Damage());
     }
@@ -176,9 +186,25 @@ public class Bandit : MonoBehaviour {
     //    }
     //}
 
-    void Run()
+    void Run(float inputX)
     {
-        if (Mathf.Abs(_inputX) > Mathf.Epsilon)
+        // Swap direction of sprite depending on walk direction
+        if (inputX > 0)
+        {
+            transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
+        }
+        else if (inputX < 0)
+        {
+            transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+        }
+
+        // Move
+        m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
+
+        //Set AirSpeed in animator
+        m_animator.SetFloat("AirSpeed", m_body2d.velocity.y);
+
+        if (Mathf.Abs(inputX) > Mathf.Epsilon)
             m_animator.SetInteger("AnimState", 2);
     }
 
