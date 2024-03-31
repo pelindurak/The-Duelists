@@ -46,9 +46,10 @@ public class FuzzyMain : MonoBehaviour
     private void UpdateAggressionValue()
     {
         BanditHealth = banditScript.BanditHealth;
+        PlayerHealth = banditScript.PlayerHealth;
 
-        playerList = healthSet.FuzzyValueList(PlayerHealth * 100);
-        enemyList = healthSet.FuzzyValueList(BanditHealth * 100);
+        playerList = healthSet.FuzzyValueList(PlayerHealth);
+        enemyList = healthSet.FuzzyValueList(BanditHealth);
         aggressionList = EvaluateAggression();
 
         crispAggro = aggroSet.Defuzzify(aggressionList);

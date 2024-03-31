@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
     private float _attackTimer = 0f;
     private bool _canAttack = true;
     private bool _isDead = false;
+    private float _inputX = 0f;
 
     public Slider HealthSlider;
     public float Health;
@@ -24,6 +25,7 @@ public class Player : MonoBehaviour
     public float AttackRange;
     public float AttackDamage;
     public float AttackCooldown;
+    private float AttackAnimDelay = 0.5f;
 
     public Transform SwordPosition;
     public LayerMask EnemyLayer;
@@ -58,16 +60,16 @@ public class Player : MonoBehaviour
         if (_isDead) return;
 
         // -- Handle input and movement --
-        float inputX = Input.GetAxis("Horizontal");
+        _inputX = Input.GetAxis("Horizontal");
 
         // Swap direction of sprite depending on walk direction
-        if (inputX > 0)
+        if (_inputX > 0)
             transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-        else if (inputX < 0)
+        else if (_inputX < 0)
             transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         // Move
-        m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
+        m_body2d.velocity = new Vector2(_inputX * m_speed, m_body2d.velocity.y);
 
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeed", m_body2d.velocity.y);
@@ -82,15 +84,12 @@ public class Player : MonoBehaviour
         {
             Attack();
         }
-        else if (Mathf.Abs(inputX) > Mathf.Epsilon)
-        {
-            Run();
-        } 
         else
         {
             Idle();
         }
-            
+        Run();
+
     }
 
     void UpdateHealth()
@@ -114,13 +113,11 @@ public class Player : MonoBehaviour
     void Attack()
     {
         if (!_canAttack) return;
-        m_animator.SetTrigger("Attack");
-        Collider2D[] bandits = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, EnemyLayer);
-        for (int i = 0; i < bandits.Length; i++)
-        {
-            bandits[i].GetComponent<Bandit>().Hurt(AttackDamage);
-        }
         ResetAttackTimer();
+
+        m_animator.SetTrigger("Attack");
+        StartCoroutine(Damage());
+
     }
 
     void ResetAttackTimer()
@@ -149,7 +146,8 @@ public class Player : MonoBehaviour
 
     void Run()
     {
-        m_animator.SetInteger("AnimState", 2);
+        if (Mathf.Abs(_inputX) > Mathf.Epsilon)
+            m_animator.SetInteger("AnimState", 2);
     }
 
     void Idle()
@@ -163,5 +161,15 @@ public class Player : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(SwordPosition.position, AttackRange);
+    }
+
+    IEnumerator Damage()
+    {
+        yield return new WaitForSecondsRealtime(AttackAnimDelay);
+        Collider2D[] bandits = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, EnemyLayer);
+        for (int i = 0; i < bandits.Length; i++)
+        {
+            bandits[i].GetComponent<Bandit>().Hurt(AttackDamage);
+        }
     }
 }

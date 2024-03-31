@@ -15,7 +15,7 @@ public class Bandit : MonoBehaviour {
     private bool                m_combatIdle = true;
 
     public Slider BanditHealthSlider, PlayerHealthSlider;
-    private float inputX = 0f;
+    private float _inputX = 0f;
     private float _attackTimer = 0f;
     private bool _canAttack = true;
     private bool _isDead = false;
@@ -26,6 +26,7 @@ public class Bandit : MonoBehaviour {
     public float AttackRange;
     public float AttackDamage;
     public float AttackCooldown;
+    private float AttackAnimDelay = 0.5f;
 
     public Transform SwordPosition;
     public LayerMask PlayerLayer;
@@ -59,13 +60,13 @@ public class Bandit : MonoBehaviour {
         //float inputX = Input.GetAxis("Horizontal");
 
         // Swap direction of sprite depending on walk direction
-        if (inputX > 0)
+        if (_inputX > 0)
             transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-        else if (inputX < 0)
+        else if (_inputX < 0)
             transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 
         // Move
-        m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
+        m_body2d.velocity = new Vector2(_inputX * m_speed, m_body2d.velocity.y);
 
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeed", m_body2d.velocity.y);
@@ -88,23 +89,39 @@ public class Bandit : MonoBehaviour {
     public void EvaluateAggression()
     {
         float aggro = fuzzyScript.GetCrispAggro();
-        if (aggro > 0)
+
+        if (aggro >= 40)
         {
             Offence();
         }
-        //else if (aggro > 40)
-        //{
-        //    StandGround();
-        //}
-        //else
-        //{
-        //    Defense();
-        //}
+        else if (aggro >= 30)
+        {
+            StandGround();
+        }
+        else
+        {
+            Defense();
+        }
     }
 
     void Offence()
     {
         Attack();
+    }
+
+    void StandGround()
+    {
+        // TODO
+    }
+
+    void Defense()
+    {
+        // TODO
+    }
+
+    bool IsCloseToPlayer()
+    {
+        return (Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer).Length > 0);
     }
 
     void UpdateHealth()
@@ -129,13 +146,10 @@ public class Bandit : MonoBehaviour {
     void Attack()
     {
         if (!_canAttack) return;
-        m_animator.SetTrigger("Attack");
-        Collider2D[] player = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer);
-        for (int i = 0; i < player.Length; i++)
-        {
-            player[i].GetComponent<Player>().Hurt(AttackDamage);
-        }
         ResetAttackTimer();
+
+        m_animator.SetTrigger("Attack");
+        StartCoroutine(Damage());
     }
 
     void ResetAttackTimer()
@@ -164,7 +178,7 @@ public class Bandit : MonoBehaviour {
 
     void Run()
     {
-        if (Mathf.Abs(inputX) > Mathf.Epsilon)
+        if (Mathf.Abs(_inputX) > Mathf.Epsilon)
             m_animator.SetInteger("AnimState", 2);
     }
 
@@ -179,6 +193,16 @@ public class Bandit : MonoBehaviour {
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(SwordPosition.position, AttackRange);
+    }
+
+    IEnumerator Damage()
+    {
+        yield return new WaitForSecondsRealtime(AttackAnimDelay);
+        Collider2D[] player = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer);
+        for (int i = 0; i < player.Length; i++)
+        {
+            player[i].GetComponent<Player>().Hurt(AttackDamage);
+        }
     }
 
 }
