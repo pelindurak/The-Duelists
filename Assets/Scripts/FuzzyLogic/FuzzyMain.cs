@@ -18,7 +18,6 @@ public class FuzzyMain : MonoBehaviour
     private float BanditHealth = 0f, PlayerHealth = 0f;
     private FuzzySet distanceSet;
 
-
     private float crispAggro = 0f;
 
 
