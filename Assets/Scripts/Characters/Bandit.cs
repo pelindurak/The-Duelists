@@ -36,6 +36,7 @@ public class Bandit : MonoBehaviour {
 
     public TMP_Text aggressionText;
 
+    public Transform LeftCollider, RightCollider;
 
     // Use this for initialization
     void Start () {
@@ -116,7 +117,7 @@ public class Bandit : MonoBehaviour {
     {
         // if the bandit reaches the edges of the play area,
         // he turns around and faces the player
-        if (transform.position.x < -10f || transform.position.x > 10f)
+        if (transform.position.x < LeftCollider.position.x + 2 || transform.position.x > RightCollider.position.x - 2)
         {
             Idle();
             StandGround();
