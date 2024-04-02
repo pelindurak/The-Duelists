@@ -29,6 +29,9 @@ public class Player : MonoBehaviour
     public Transform SwordPosition;
     public LayerMask EnemyLayer;
 
+
+    public GameObject GameOverMenu;
+
     // Use this for initialization
     void Start()
     {
@@ -57,6 +60,11 @@ public class Player : MonoBehaviour
         }
 
         if (_isDead) return;
+        else if (GameOverMenu.activeInHierarchy)
+        {
+            Idle();
+            return;
+        }
 
         // -- Handle input and movement --
         _inputX = Input.GetAxis("Horizontal");

@@ -41,6 +41,7 @@ public class Bandit : MonoBehaviour {
     public TMP_Text aggressionText;
 
     public Transform LeftCollider, RightCollider;
+    public GameObject GameOverMenu;
 
 
     Stack<BaseState> stateStack = new Stack<BaseState>();
@@ -53,6 +54,7 @@ public class Bandit : MonoBehaviour {
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Bandit>();
 
         fuzzyScript = GetComponent<FuzzyMain>();
+        GameOverMenu.SetActive(false);
     }
 	
 	// Update is called once per frame
@@ -69,7 +71,11 @@ public class Bandit : MonoBehaviour {
             m_animator.SetBool("Grounded", m_grounded);
         }
 
-        if (_isDead || _isPlayerDead) return;
+        if (_isDead || _isPlayerDead)
+        {
+            GameOverMenu.SetActive(true);
+            return;
+        }
 
         UpdateHealth();
 
