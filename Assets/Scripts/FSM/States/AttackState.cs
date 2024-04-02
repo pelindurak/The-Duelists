@@ -17,10 +17,7 @@ public class AttackState : BaseState
 
     public override void RunState()
     {
-        bandit.ResetAttackTimer();
-
-        bandit.m_animator.SetTrigger("Attack");
-        bandit.StartCoroutine(bandit.Damage());
+        bandit.Attack();
     }
 
     public override string GetName()

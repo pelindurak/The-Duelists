@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 public class StandGroundState : BaseState
 {
     public StandGroundState(Bandit bandit) : base(bandit)
@@ -16,7 +18,7 @@ public class StandGroundState : BaseState
 
     public override void RunState()
     {
-        bandit.SwapSpriteDirection(bandit.PlayerObject.transform.position.x - bandit.transform.position.x);
+        bandit.StandGround();
     }
 
     public override string GetName()

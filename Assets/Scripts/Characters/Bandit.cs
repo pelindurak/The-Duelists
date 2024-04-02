@@ -43,6 +43,7 @@ public class Bandit : MonoBehaviour {
 
 
     Stack<BaseState> stateStack = new Stack<BaseState>();
+    public float HealthDiff = 0f;
 
     // Use this for initialization
     void Start () {
@@ -108,7 +109,7 @@ public class Bandit : MonoBehaviour {
 
     public void RunAction()
     {
-        BaseState currentState = (BaseState)stateStack.Pop();
+        BaseState currentState = stateStack.Peek();
         currentState.PreSwap();
         currentState.RunState();
         currentState.PostSwap();
@@ -143,18 +144,14 @@ public class Bandit : MonoBehaviour {
 
                 break;
             case AttackState:
-                if (!IsCloseToPlayer() && BanditHealth >= PlayerHealth)
+                if (!IsCloseToPlayer() || BanditHealth < PlayerHealth)
                 {
                     stateStack.Pop();
-                }
-                else if (BanditHealth < PlayerHealth)
-                {
-                    stateStack.Push(new StandGroundState(this));
                 }
 
                 break;
             case ChasePlayerState:
-                if (IsCloseToPlayer() && BanditHealth >= PlayerHealth)
+                if (IsCloseToPlayer())
                 {
                     stateStack.Push(new AttackState(this));
                 }
@@ -179,7 +176,7 @@ public class Bandit : MonoBehaviour {
                 {
                     stateStack.Pop();
                 }
-                else if (BanditHealth < PlayerHealth - 20)
+                else if ((BanditHealth < PlayerHealth - HealthDiff) && !ReachedMapEdge())
                 {
                     stateStack.Push(new RunAwayState(this));
                 }

@@ -15,9 +15,7 @@ public class RunAwayState : BaseState
 
     public override void RunState()
     {
-        float xDiff = bandit.PlayerObject.transform.position.x - bandit.transform.position.x;
-        float inputX = Mathf.Clamp(xDiff, -1f, 1f);
-        bandit.Run(-inputX);
+        bandit.RunAway();
     }
 
     public override string GetName()

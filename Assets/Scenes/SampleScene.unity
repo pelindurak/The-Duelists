@@ -3561,7 +3561,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7647381830818817823, guid: 07d78d5d756024e4abb24ba916512acc, type: 3}
       propertyPath: m_Name
-      value: "R\u0130ghtWallCollider"
+      value: RightWallCollider
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6223,6 +6223,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3224232567697039029, guid: ef8a64b51b609fc4e8548482a5e4c14b, type: 3}
+      propertyPath: HealthDiff
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3224232567697039029, guid: ef8a64b51b609fc4e8548482a5e4c14b, type: 3}
       propertyPath: IsFsmActive
       value: 1
       objectReference: {fileID: 0}
@@ -6508,6 +6512,7 @@ MonoBehaviour:
   aggressionText: {fileID: 1767781791}
   LeftCollider: {fileID: 1915719419}
   RightCollider: {fileID: 1242911070}
+  HealthDiff: 10
 --- !u!4 &2014065246
 Transform:
   m_ObjectHideFlags: 0

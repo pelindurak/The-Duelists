@@ -16,13 +16,7 @@ public class ChasePlayerState : BaseState
 
     public override void RunState()
     {
-        float inputX = 0f;
-        if (!bandit.IsCloseToPlayer())
-        {
-            float xDiff = bandit.PlayerObject.transform.position.x - bandit.transform.position.x;
-            inputX = Mathf.Clamp(xDiff, -1f, 1f);
-            bandit.Run(inputX);
-        }
+        bandit.ChasePlayer();
     }
 
     public override string GetName()

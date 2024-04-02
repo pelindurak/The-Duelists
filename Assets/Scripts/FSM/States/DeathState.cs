@@ -14,8 +14,7 @@ public class DeathState : BaseState
 
     public override void RunState()
     {
-        bandit.m_animator.SetTrigger("Death");
-        bandit._isDead = true;
+        bandit.Death();
     }
 
     public override string GetName()
