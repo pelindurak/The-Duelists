@@ -1,6 +1,4 @@
 
-using UnityEngine;
-
 public class StandGroundState : BaseState
 {
     public StandGroundState(Bandit bandit) : base(bandit)

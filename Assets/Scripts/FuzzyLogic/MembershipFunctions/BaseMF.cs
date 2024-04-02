@@ -7,10 +7,6 @@ public abstract class BaseMF
         Name = name;
     }
 
-    public abstract float GetMin();
-
-    public abstract float GetMax();
-
     public abstract float GetMembership(float value);
 
     public abstract float CalculateCentroid(float value);

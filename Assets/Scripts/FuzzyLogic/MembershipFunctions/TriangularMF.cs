@@ -33,14 +33,4 @@ public class TriangularMF : BaseMF
         return (third - first) * value / 2;
     }
 
-    public override float GetMin()
-    {
-        return first;
-    }
-
-    public override float GetMax()
-    {
-        return third;
-    }
-
 }

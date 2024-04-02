@@ -29,13 +29,4 @@ public class AscendingLinearMF : BaseMF
         return (second - first) * value / 2;
     }
 
-    public override float GetMin()
-    {
-        return first;
-    }
-
-    public override float GetMax()
-    {
-        return second;
-    }
 }

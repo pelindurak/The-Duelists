@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Windows;
 using System.Collections.Generic;
 
 public class Bandit : MonoBehaviour {
@@ -206,6 +205,7 @@ public class Bandit : MonoBehaviour {
         else if (aggro >= 30)
         {
             aggressionText.text = "StandGround";
+            Idle();
             StandGround();
         }
         else

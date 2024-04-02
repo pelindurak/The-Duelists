@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FuzzyMain : MonoBehaviour
 {
@@ -34,7 +33,10 @@ public class FuzzyMain : MonoBehaviour
 
     void Update()
     {
-        UpdateAggressionValue();
+        if (banditScript.IsFuzzyLogicActive)
+        {
+            UpdateAggressionValue();
+        }
     }
 
     public float GetCrispAggro()

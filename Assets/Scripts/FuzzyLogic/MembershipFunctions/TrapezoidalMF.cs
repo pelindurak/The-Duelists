@@ -38,14 +38,4 @@ public class TrapezoidalMF : BaseMF
         return ((third - second) + (fourth - first)) * value / 2;
     }
 
-    public override float GetMin()
-    {
-        return first;
-    }
-
-    public override float GetMax()
-    {
-        return fourth;
-    }
-
 }
