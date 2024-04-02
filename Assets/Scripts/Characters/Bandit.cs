@@ -28,11 +28,11 @@ public class Bandit : MonoBehaviour {
     public float AttackRange;
     public float AttackDamage;
     public float AttackCooldown;
+    public float AttackAnimDelay = 0.5f;
 
     public bool IsFsmActive, IsFuzzyLogicActive;
 
     public bool IsSimulation = false;
-    public float AttackAnimDelay { get; set; } = 0.5f;
 
     public Transform SwordPosition;
     public LayerMask PlayerLayer;

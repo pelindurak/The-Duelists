@@ -156,6 +156,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1018756409}
     - target: {fileID: 1457417307702255867, guid: daa01ecf12c2f034dac9589a068af2f1, type: 3}
+      propertyPath: AttackCooldown
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1457417307702255867, guid: daa01ecf12c2f034dac9589a068af2f1, type: 3}
       propertyPath: aggressionText
       value: 
       objectReference: {fileID: 1436812586}
