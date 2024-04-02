@@ -3,24 +3,26 @@ using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Windows;
+using System.Collections.Generic;
 
 public class Bandit : MonoBehaviour {
 
-    [SerializeField] float      m_speed = 4.0f;
+    public float m_speed = 4.0f;
     //[SerializeField] float      m_jumpForce = 7.5f;
 
-    private Animator            m_animator;
-    private Rigidbody2D         m_body2d;
-    private Sensor_Bandit       m_groundSensor;
-    private FuzzyMain           fuzzyScript;
-    private bool                m_grounded = false;
-    private bool                m_combatIdle = true;
+    public Animator m_animator { get; set; }
+    public Rigidbody2D m_body2d { get; set; }
+    public Sensor_Bandit m_groundSensor { get; set; }
+    public bool m_grounded { get; set; } = false;
+    public bool m_combatIdle { get; set; } = true;
+
+    private FuzzyMain fuzzyScript;
 
     public Slider BanditHealthSlider, PlayerHealthSlider;
-    private float _attackTimer = 0f;
-    private bool _canAttack = true;
-    private bool _isDead = false;
-    private bool _isPlayerDead = false;
+    public float _attackTimer { get; set; } = 0f;
+    public bool _canAttack { get; set; } = true;
+    public bool _isDead { get; set; } = false;
+    public bool _isPlayerDead { get; set; } = false;
 
     public float BanditHealth;
     public float PlayerHealth;
@@ -28,7 +30,9 @@ public class Bandit : MonoBehaviour {
     public float AttackRange;
     public float AttackDamage;
     public float AttackCooldown;
-    private float AttackAnimDelay = 0.5f;
+
+    public bool IsFsmActive;
+    public float AttackAnimDelay { get; set; } = 0.5f;
 
     public Transform SwordPosition;
     public LayerMask PlayerLayer;
@@ -38,11 +42,15 @@ public class Bandit : MonoBehaviour {
 
     public Transform LeftCollider, RightCollider;
 
+
+    Stack<BaseState> stateStack = new Stack<BaseState>();
+
     // Use this for initialization
     void Start () {
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_Bandit>();
+
         fuzzyScript = GetComponent<FuzzyMain>();
     }
 	
@@ -70,9 +78,108 @@ public class Bandit : MonoBehaviour {
 
     }
 
-    void DecideAction()
+    public void DecideAction()
     {
-        EvaluateAggression();
+        if (fuzzyScript.isActiveAndEnabled) 
+            EvaluateAggression();
+        else if (IsFsmActive) 
+            RunFsm();
+    }
+
+    public void EnterFsm()
+    {
+        stateStack.Push(new IdleState(this));
+    }
+
+    public void RunFsm()
+    {
+        DecideFsmAction();
+        RunAction();
+    }
+
+    public void RunAction()
+    {
+        BaseState currentState = (BaseState)stateStack.Pop();
+        currentState.PreSwap();
+        currentState.RunState();
+        currentState.PostSwap();
+        aggressionText.text = currentState.GetName();
+    }
+
+    public void DecideFsmAction()
+    {
+        if (BanditHealth <= 0)
+        {
+            if (stateStack.Peek() is not DeathState)
+            {
+                stateStack.Push(new DeathState(this));
+            }
+            return;
+        }
+        if (stateStack.Count == 0)
+        {
+            stateStack.Push(new IdleState(this));
+        }
+        switch (stateStack.Peek())
+        {
+            case IdleState:
+                if (BanditHealth >= PlayerHealth)
+                {
+                    stateStack.Push(new ChasePlayerState(this));
+                }
+                else
+                {
+                    stateStack.Push(new StandGroundState(this));
+                }
+
+                break;
+            case AttackState:
+                if (!IsCloseToPlayer() && BanditHealth >= PlayerHealth)
+                {
+                    stateStack.Pop();
+                }
+                else if (BanditHealth < PlayerHealth)
+                {
+                    stateStack.Push(new StandGroundState(this));
+                }
+
+                break;
+            case ChasePlayerState:
+                if (IsCloseToPlayer() && BanditHealth >= PlayerHealth)
+                {
+                    stateStack.Push(new AttackState(this));
+                }
+                else if (BanditHealth < PlayerHealth)
+                {
+                    stateStack.Push(new StandGroundState(this));
+                }
+
+                break;
+            case DeathState:
+
+                break;
+            case RunAwayState:
+                if (ReachedMapEdge())
+                {
+                    stateStack.Pop();
+                }
+
+                break;
+            case StandGroundState:
+                if (BanditHealth >= PlayerHealth)
+                {
+                    stateStack.Pop();
+                }
+                else if (BanditHealth < PlayerHealth - 20)
+                {
+                    stateStack.Push(new RunAwayState(this));
+                }
+
+                break;
+            default:
+                stateStack.Push(new IdleState(this));
+                break;
+        }
     }
 
     public void EvaluateAggression()
@@ -98,7 +205,7 @@ public class Bandit : MonoBehaviour {
 
     // follow player
     // attack as much as you can
-    void Offence()
+    public void Offence()
     {
         if (IsCloseToPlayer()) Attack();
         else ChasePlayer();
@@ -106,18 +213,18 @@ public class Bandit : MonoBehaviour {
 
     // follow player
     // attack & retreat
-    void StandGround()
+    public void StandGround()
     {
         SwapSpriteDirection(PlayerObject.transform.position.x - transform.position.x);
         if (IsCloseToPlayer()) Attack();
     }
 
     // retreat
-    void Defense()
+    public void Defense()
     {
         // if the bandit reaches the edges of the play area,
         // he turns around and faces the player
-        if (transform.position.x < LeftCollider.position.x + 2 || transform.position.x > RightCollider.position.x - 2)
+        if (ReachedMapEdge())
         {
             Idle();
             StandGround();
@@ -129,7 +236,7 @@ public class Bandit : MonoBehaviour {
 
     }
 
-    void ChasePlayer()
+    public void ChasePlayer()
     {
         float inputX = 0f;
         if (!IsCloseToPlayer()) 
@@ -140,19 +247,19 @@ public class Bandit : MonoBehaviour {
         }
     }
 
-    void RunAway()
+    public void RunAway()
     {
         float xDiff = PlayerObject.transform.position.x - transform.position.x;
         float inputX = Mathf.Clamp(xDiff, -1f, 1f);
         Run(-inputX);
     }
 
-    bool IsCloseToPlayer()
+    public bool IsCloseToPlayer()
     {
         return (Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer).Length > 0);
     }
 
-    void UpdateHealth()
+    public void UpdateHealth()
     {
         BanditHealthSlider.value = BanditHealth;
         PlayerHealth = PlayerHealthSlider.value;
@@ -160,7 +267,7 @@ public class Bandit : MonoBehaviour {
         if (PlayerHealth <= 0) _isPlayerDead = true;
     }
 
-    void Death()
+    public void Death()
     {
         m_animator.SetTrigger("Death");
         _isDead = true;
@@ -172,7 +279,7 @@ public class Bandit : MonoBehaviour {
         BanditHealth -= damage;
     }
 
-    void Attack()
+    public void Attack()
     {
         if (!_canAttack) return;
         ResetAttackTimer();
@@ -182,13 +289,13 @@ public class Bandit : MonoBehaviour {
         StartCoroutine(Damage());
     }
 
-    void ResetAttackTimer()
+    public void ResetAttackTimer()
     {
         _attackTimer = AttackCooldown;
         _canAttack = false;
     }
 
-    void TickAttackTimer()
+    public void TickAttackTimer()
     {
         _attackTimer -= Time.deltaTime;
         if (_attackTimer < 0) _canAttack = true;
@@ -206,7 +313,7 @@ public class Bandit : MonoBehaviour {
     //    }
     //}
 
-    void Run(float inputX)
+    public void Run(float inputX)
     {
         SwapSpriteDirection(inputX);
 
@@ -221,7 +328,7 @@ public class Bandit : MonoBehaviour {
     }
 
     // Swap direction of sprite depending on walk direction
-    void SwapSpriteDirection(float xPos)
+    public void SwapSpriteDirection(float xPos)
     {
         if (xPos > 0)
         {
@@ -233,7 +340,7 @@ public class Bandit : MonoBehaviour {
         }
     }
 
-    void Idle()
+    public void Idle()
     {
         if (m_combatIdle)
             m_animator.SetInteger("AnimState", 1);
@@ -246,7 +353,12 @@ public class Bandit : MonoBehaviour {
         Gizmos.DrawWireSphere(SwordPosition.position, AttackRange);
     }
 
-    IEnumerator Damage()
+    public bool ReachedMapEdge()
+    {
+        return (transform.position.x < LeftCollider.position.x + 2 || transform.position.x > RightCollider.position.x - 2);
+    }
+
+    public IEnumerator Damage()
     {
         yield return new WaitForSecondsRealtime(AttackAnimDelay);
         Collider2D[] player = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer);
