@@ -20,6 +20,6 @@ public class DeathState : BaseState
 
     public override string GetName()
     {
-        return "DeathState";
+        return "Death";
     }
 }

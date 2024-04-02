@@ -14,7 +14,6 @@ public class Bandit : MonoBehaviour {
     public Rigidbody2D m_body2d { get; set; }
     public Sensor_Bandit m_groundSensor { get; set; }
     public bool m_grounded { get; set; } = false;
-    public bool m_combatIdle { get; set; } = true;
 
     private FuzzyMain fuzzyScript;
 
@@ -31,7 +30,7 @@ public class Bandit : MonoBehaviour {
     public float AttackDamage;
     public float AttackCooldown;
 
-    public bool IsFsmActive;
+    public bool IsFsmActive, IsFuzzyLogicActive;
     public float AttackAnimDelay { get; set; } = 0.5f;
 
     public Transform SwordPosition;
@@ -80,10 +79,20 @@ public class Bandit : MonoBehaviour {
 
     public void DecideAction()
     {
-        if (fuzzyScript.isActiveAndEnabled) 
+        if (IsFuzzyLogicActive)
+        {
             EvaluateAggression();
-        else if (IsFsmActive) 
+            return;
+        }
+        else if (IsFsmActive)
+        {
             RunFsm();
+        }
+        else
+        {
+            ChillIdle();
+            aggressionText.text = "";
+        }
     }
 
     public void EnterFsm()
@@ -342,10 +351,12 @@ public class Bandit : MonoBehaviour {
 
     public void Idle()
     {
-        if (m_combatIdle)
-            m_animator.SetInteger("AnimState", 1);
-        else 
-            m_animator.SetInteger("AnimState", 0);
+        m_animator.SetInteger("AnimState", 1);
+    }
+
+    public void ChillIdle()
+    {
+        m_animator.SetInteger("AnimState", 0);
     }
 
     private void OnDrawGizmos()

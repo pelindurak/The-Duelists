@@ -22,7 +22,7 @@ public class RunAwayState : BaseState
 
     public override string GetName()
     {
-        return "RunAwayState";
+        return "RunAway";
     }
 
 }

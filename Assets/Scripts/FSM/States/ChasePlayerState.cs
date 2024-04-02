@@ -27,6 +27,6 @@ public class ChasePlayerState : BaseState
 
     public override string GetName()
     {
-        return "ChasePlayerState";
+        return "ChasePlayer";
     }
 }

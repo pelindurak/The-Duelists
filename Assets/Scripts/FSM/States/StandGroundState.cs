@@ -21,6 +21,6 @@ public class StandGroundState : BaseState
 
     public override string GetName()
     {
-        return "StandGroundState";
+        return "StandGround";
     }
 }

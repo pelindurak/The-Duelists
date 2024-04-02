@@ -25,6 +25,6 @@ public class AttackState : BaseState
 
     public override string GetName()
     {
-        return "AttackState";
+        return "Attack";
     }
 }

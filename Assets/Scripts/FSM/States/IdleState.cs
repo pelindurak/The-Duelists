@@ -19,7 +19,7 @@ public class IdleState : BaseState
 
     public override string GetName()
     {
-        return "IdleState";
+        return "Idle";
     }
 
 }
