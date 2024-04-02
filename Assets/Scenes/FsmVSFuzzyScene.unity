@@ -140,6 +140,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1457417307702255867, guid: daa01ecf12c2f034dac9589a068af2f1, type: 3}
+      propertyPath: IsSimulation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1457417307702255867, guid: daa01ecf12c2f034dac9589a068af2f1, type: 3}
       propertyPath: LeftCollider
       value: 
       objectReference: {fileID: 1018756410}
@@ -371,6 +375,10 @@ PrefabInstance:
     - target: {fileID: 6452111210358049413, guid: 0afe2334d983131419399899c4cf1b71, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6490303964441406636, guid: 0afe2334d983131419399899c4cf1b71, type: 3}
+      propertyPath: IsSimulation
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6490303964441406636, guid: 0afe2334d983131419399899c4cf1b71, type: 3}
       propertyPath: LeftCollider

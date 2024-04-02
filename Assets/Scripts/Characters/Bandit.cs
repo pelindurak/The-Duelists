@@ -30,6 +30,8 @@ public class Bandit : MonoBehaviour {
     public float AttackCooldown;
 
     public bool IsFsmActive, IsFuzzyLogicActive;
+
+    public bool IsSimulation = false;
     public float AttackAnimDelay { get; set; } = 0.5f;
 
     public Transform SwordPosition;
@@ -298,7 +300,9 @@ public class Bandit : MonoBehaviour {
 
         Idle();
         m_animator.SetTrigger("Attack");
-        StartCoroutine(Damage());
+        if (IsSimulation) StartCoroutine(DamageAI());
+        else StartCoroutine(DamagePlayer());
+
     }
 
     public void ResetAttackTimer()
@@ -373,13 +377,23 @@ public class Bandit : MonoBehaviour {
         return (transform.position.x < LeftCollider.position.x + 2 || transform.position.x > RightCollider.position.x - 2);
     }
 
-    public IEnumerator Damage()
+    public IEnumerator DamagePlayer()
     {
         yield return new WaitForSecondsRealtime(AttackAnimDelay);
         Collider2D[] player = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer);
         for (int i = 0; i < player.Length; i++)
         {
             player[i].GetComponent<Player>().Hurt(AttackDamage);
+        }
+    }
+
+    public IEnumerator DamageAI()
+    {
+        yield return new WaitForSecondsRealtime(AttackAnimDelay);
+        Collider2D[] player = Physics2D.OverlapCircleAll(SwordPosition.position, AttackRange, PlayerLayer);
+        for (int i = 0; i < player.Length; i++)
+        {
+            player[i].GetComponent<Bandit>().Hurt(AttackDamage);
         }
     }
 
