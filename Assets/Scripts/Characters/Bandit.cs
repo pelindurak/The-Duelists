@@ -118,7 +118,12 @@ public class Bandit : MonoBehaviour {
 
     public void DecideFsmAction()
     {
-        if (BanditHealth <= 0)
+        if (stateStack.Count == 0 || PlayerHealth <= 0)
+        {
+            stateStack.Push(new IdleState(this));
+        }
+
+        else if (BanditHealth <= 0)
         {
             if (stateStack.Peek() is not DeathState)
             {
@@ -126,14 +131,15 @@ public class Bandit : MonoBehaviour {
             }
             return;
         }
-        if (stateStack.Count == 0)
-        {
-            stateStack.Push(new IdleState(this));
-        }
+        
         switch (stateStack.Peek())
         {
             case IdleState:
-                if (BanditHealth >= PlayerHealth)
+                if (PlayerHealth <= 0)
+                {
+                    return;
+                }
+                else if (BanditHealth >= PlayerHealth)
                 {
                     stateStack.Push(new ChasePlayerState(this));
                 }
@@ -348,7 +354,8 @@ public class Bandit : MonoBehaviour {
 
     public void Idle()
     {
-        m_animator.SetInteger("AnimState", 1);
+        if (PlayerHealth > 0) m_animator.SetInteger("AnimState", 1);
+        else ChillIdle();
     }
 
     public void ChillIdle()
