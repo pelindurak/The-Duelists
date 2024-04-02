@@ -29,14 +29,19 @@ public class AggressionRule
 
     // If health IS low & player health IS NOT low
     // OR
-    // If health IS high & player health IS high
+    // If health IS medium & player health IS high
     private MemPair LowAggro()
     {
         float health = list1[0].value;
         float playerHealth = list2[0].value;
-        float health2 = list1[2].value;
+
+        float health2 = list1[1].value;
         float playerHealth2 = list2[2].value;
-        float value = Math.Max(Math.Min(health, (1 - playerHealth)), Math.Min(health2, playerHealth2));
+
+        float value = Math.Max(
+            Math.Min(health, (1 - playerHealth)), 
+            Math.Min(health2, playerHealth2));
+
         return new MemPair("LOW", value);
     }
 
@@ -48,9 +53,14 @@ public class AggressionRule
     {
         float health = list1[1].value;
         float playerHealth = list2[0].value;
+
         float health2 = list1[0].value;
         float playerHealth2 = list2[0].value;
-        float value = Math.Max(Math.Min(health, (1 - playerHealth)), Math.Min(health2, playerHealth2));
+
+        float value = Math.Max(
+            Math.Min(health, (1 - playerHealth)), 
+            Math.Min(health2, playerHealth2));
+
         return new MemPair("MEDIUM", value);
     }
 
@@ -58,13 +68,36 @@ public class AggressionRule
     // If health IS high & player health IS NOT high
     // OR
     // If health IS medium & player health IS low
+    // OR
+    // If health IS not low & player health IS very low
+    // OR
+    // If health IS high & player health IS high
     private MemPair HighAggro()
     {
         float health = list1[2].value;
         float playerHealth = list2[2].value;
+
         float health2 = list1[1].value;
         float playerHealth2 = list2[0].value;
-        float value = Math.Max(Math.Min(health, (1 - playerHealth)), Math.Min(health2, playerHealth2));
+
+        float health3 = list1[0].value;
+        float playerHealth3 = list2[0].value;
+
+        float health4 = list1[2].value;
+        float playerHealth4 = list2[2].value;
+
+        float value = Math.Max(
+            Math.Min(health, 1 - playerHealth), 
+            Math.Min(health2, playerHealth2));
+
+        value = Math.Max(
+            value,
+            Math.Min(1 - health3, playerHealth3 * playerHealth3));
+
+        value = Math.Max(
+            value,
+            Math.Min(health4, playerHealth4));
+
         return new MemPair("HIGH", value);
     }
 
