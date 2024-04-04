@@ -162,7 +162,7 @@ public class Bandit : MonoBehaviour {
                     stateStack.Pop();
                 }
 
-                break;
+                break;  
             case ChasePlayerState:
                 if (IsCloseToPlayer())
                 {
@@ -170,7 +170,7 @@ public class Bandit : MonoBehaviour {
                 }
                 else if (BanditHealth < PlayerHealth)
                 {
-                    stateStack.Push(new StandGroundState(this));
+                    stateStack.Pop();
                 }
 
                 break;

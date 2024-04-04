@@ -982,6 +982,10 @@ PrefabInstance:
       value: FsmBandit
       objectReference: {fileID: 0}
     - target: {fileID: 1457417307702255867, guid: daa01ecf12c2f034dac9589a068af2f1, type: 3}
+      propertyPath: HealthDiff
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1457417307702255867, guid: daa01ecf12c2f034dac9589a068af2f1, type: 3}
       propertyPath: GameOverMenu
       value: 
       objectReference: {fileID: 831800156}
